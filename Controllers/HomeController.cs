@@ -28,4 +28,15 @@ public class HomeController : Controller
     {
         return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
     }
+
+    // 👇 AQUÍ ESTÁ EL NUEVO CÓDIGO PARA MANEJAR EL 404 👇
+    [Route("/Home/ErrorStatus")]
+    public IActionResult ErrorStatus(int statusCode)
+    {
+        if (statusCode == 404)
+        {
+            return View("NotFound"); // Llama a la vista NotFound.cshtml que creamos
+        }
+        return View("Error"); // Llama a la vista de error 500 por defecto
+    }
 }

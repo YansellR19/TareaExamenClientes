@@ -14,6 +14,8 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+// Configuración para interceptar el 404 NotFound() y otros códigos
+app.UseStatusCodePagesWithReExecute("/Home/ErrorStatus", "?statusCode={0}");
 app.UseRouting();
 
 app.UseAuthorization();
