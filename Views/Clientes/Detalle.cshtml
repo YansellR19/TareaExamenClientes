@@ -1,0 +1,30 @@
+@model TareaExamenClientes.Models.Cliente
+@{ ViewData["Title"] = "Detalle del Cliente"; }
+
+<h2>Detalles del Cliente</h2>
+<hr />
+
+<div class="card shadow-sm" style="max-width: 500px;">
+    <div class="card-body">
+        <dl class="row mb-0">
+            <dt class="col-sm-5">ID:</dt>
+            <dd class="col-sm-7">@Model.Id</dd>
+
+            <dt class="col-sm-5">Nombre:</dt>
+            <dd class="col-sm-7">@Model.Nombre</dd>
+
+            <dt class="col-sm-5">Email:</dt>
+            <dd class="col-sm-7">@Model.Email</dd>
+
+            <dt class="col-sm-5">Teléfono:</dt>
+            <dd class="col-sm-7">@(string.IsNullOrEmpty(Model.Telefono) ? "No especificado" : Model.Telefono)</dd>
+
+            <dt class="col-sm-5">Fecha de Nacimiento:</dt>
+            <dd class="col-sm-7">@Model.FechaNacimiento.ToString("dd/MM/yyyy")</dd>
+        </dl>
+    </div>
+</div>
+
+<div class="mt-4">
+    <a asp-action="Index" class="btn btn-secondary">Volver a la lista</a>
+</div>
