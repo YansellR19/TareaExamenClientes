@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TareaExamenClientes.Data;
 
@@ -11,9 +12,11 @@ using TareaExamenClientes.Data;
 namespace TareaExamenClientes.Migrations
 {
     [DbContext(typeof(ClienteContext))]
-    partial class ClienteContextModelSnapshot : ModelSnapshot
+    [Migration("20260318030859_AgregarCategoriasYProducto")]
+    partial class AgregarCategoriasYProducto
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -68,44 +71,6 @@ namespace TareaExamenClientes.Migrations
                     b.ToTable("Clientes");
                 });
 
-            modelBuilder.Entity("TareaExamenClientes.Models.Pedido", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("ClienteNombre")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("Fecha")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Pedidos");
-                });
-
-            modelBuilder.Entity("TareaExamenClientes.Models.PedidoProducto", b =>
-                {
-                    b.Property<int>("PedidoId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ProductoId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Cantidad")
-                        .HasColumnType("int");
-
-                    b.HasKey("PedidoId", "ProductoId");
-
-                    b.HasIndex("ProductoId");
-
-                    b.ToTable("PedidoProductos");
-                });
-
             modelBuilder.Entity("TareaExamenClientes.Models.Producto", b =>
                 {
                     b.Property<int>("Id")
@@ -133,25 +98,6 @@ namespace TareaExamenClientes.Migrations
                     b.ToTable("Productos");
                 });
 
-            modelBuilder.Entity("TareaExamenClientes.Models.PedidoProducto", b =>
-                {
-                    b.HasOne("TareaExamenClientes.Models.Pedido", "Pedido")
-                        .WithMany("PedidoProductos")
-                        .HasForeignKey("PedidoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("TareaExamenClientes.Models.Producto", "Producto")
-                        .WithMany()
-                        .HasForeignKey("ProductoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Pedido");
-
-                    b.Navigation("Producto");
-                });
-
             modelBuilder.Entity("TareaExamenClientes.Models.Producto", b =>
                 {
                     b.HasOne("TareaExamenClientes.Models.Categoria", "Categoria")
@@ -166,11 +112,6 @@ namespace TareaExamenClientes.Migrations
             modelBuilder.Entity("TareaExamenClientes.Models.Categoria", b =>
                 {
                     b.Navigation("Productos");
-                });
-
-            modelBuilder.Entity("TareaExamenClientes.Models.Pedido", b =>
-                {
-                    b.Navigation("PedidoProductos");
                 });
 #pragma warning restore 612, 618
         }

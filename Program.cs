@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using TareaExamenClientes.Data;
+using TareaExamenClientes.Models; 
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,21 +14,41 @@ builder.Services.AddDbContext<ClienteContext>(options =>
 
 var app = builder.Build();
 
+// LÓGICA DE DATOS DE PRUEBA (SEED DATA)
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<ClienteContext>();
+    context.Database.EnsureCreated(); // Crea la BD si no existe
+
+    // Solo agrega datos si la tabla Categorias está vacía
+    if (!context.Categorias.Any())
+    {
+        var electronica = new Categoria { Nombre = "Electrónica" };
+        var hogar = new Categoria { Nombre = "Hogar" };
+
+        context.Categorias.AddRange(electronica, hogar);
+
+        context.Productos.AddRange(
+            new Producto { Nombre = "Laptop Dell", Precio = 950.00m, Categoria = electronica },
+            new Producto { Nombre = "Mouse Gamer", Precio = 45.00m, Categoria = electronica },
+            new Producto { Nombre = "Cafetera Pro", Precio = 120.00m, Categoria = hogar }
+        );
+
+        context.SaveChanges();
+    }
+}
+
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
 app.UseHttpsRedirection();
-// Configuración para interceptar el 404 NotFound() y otros códigos
 app.UseStatusCodePagesWithReExecute("/Home/ErrorStatus", "?statusCode={0}");
 app.UseRouting();
-
 app.UseAuthorization();
-
 app.MapStaticAssets();
 
 app.MapControllerRoute(

@@ -1,0 +1,34 @@
+@model TareaExamenClientes.Models.Producto
+@{ ViewData["Title"] = "Nuevo Producto"; }
+
+<h2>Agregar Producto</h2>
+<hr />
+
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="Crear">
+            <div class="mb-3">
+                <label asp-for="Nombre" class="form-label"></label>
+                <input asp-for="Nombre" class="form-control" />
+                <span asp-validation-for="Nombre" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Precio" class="form-label"></label>
+                <input asp-for="Precio" class="form-control" type="number" step="0.01" />
+                <span asp-validation-for="Precio" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="CategoriaId" class="form-label">Categoría</label>
+                <select asp-for="CategoriaId" class="form-select" asp-items="ViewBag.Categorias">
+                    <option value="">-- Seleccione una Categoría --</option>
+                </select>
+                <span asp-validation-for="CategoriaId" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn btn-success">Guardar Producto</button>
+            <a asp-action="Index" class="btn btn-secondary">Volver</a>
+        </form>
+    </div>
+</div>
