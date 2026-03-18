@@ -1,59 +1,98 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using TareaExamenClientes.Data;
 using TareaExamenClientes.Models;
-using System.Collections.Generic;
-using System.Linq;
 
-namespace TareaExamenClientes.Controllers
+namespace TareaExamenClientes.Controllers;
+
+public class ClientesController : Controller
 {
-    public class ClientesController : Controller
+    private readonly ClienteContext _context;
+
+    public ClientesController(ClienteContext context)
     {
-        // Simulador de base de datos en memoria
-        private static List<Cliente> _clientes = new List<Cliente>();
-        private static int _nextId = 1;
+        _context = context;
+    }
 
-        // 1. Acción Index (Muestra la lista)
-        public IActionResult Index()
+    // LISTAR
+    public async Task<IActionResult> Index()
+    {
+        return View(await _context.Clientes.ToListAsync());
+    }
+
+    // DETALLE
+    public async Task<IActionResult> Detalle(int id)
+    {
+        var cliente = await _context.Clientes.FirstOrDefaultAsync(c => c.Id == id);
+        return cliente == null ? NotFound() : View(cliente);
+    }
+
+    // CREAR (GET)
+    public IActionResult Crear() => View();
+
+    // CREAR (POST)
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Crear(Cliente cliente)
+    {
+        if (ModelState.IsValid)
         {
-            return View(_clientes);
+            _context.Add(cliente);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
+        return View(cliente);
+    }
 
-        // 2. Acción Detalle (Busca por ID)
-        public IActionResult Detalle(int id)
+    // EDITAR (GET)
+    public async Task<IActionResult> Editar(int id)
+    {
+        var cliente = await _context.Clientes.FindAsync(id);
+        return cliente == null ? NotFound() : View(cliente);
+    }
+
+    // EDITAR (POST)
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Editar(int id, Cliente cliente)
+    {
+        if (id != cliente.Id) return BadRequest();
+
+        if (ModelState.IsValid)
         {
-            var cliente = _clientes.FirstOrDefault(c => c.Id == id);
-            
-            if (cliente == null)
+            try
             {
-                // Devuelve 404 si el cliente no existe, como pide la rúbrica
-                return NotFound(); 
-            }
-
-            return View(cliente);
-        }
-
-        // 3. Acción Crear (GET - Muestra el formulario vacío)
-        public IActionResult Crear()
-        {
-            return View();
-        }
-
-        // 4. Acción Crear (POST - Recibe los datos del formulario)
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Crear(Cliente cliente)
-        {
-            // Verifica si el modelo cumple con las Data Annotations y la validación de edad
-            if (ModelState.IsValid)
-            {
-                cliente.Id = _nextId++;
-                _clientes.Add(cliente);
-
-                // Patrón PRG: Redirige a Index después de un POST exitoso
+                _context.Update(cliente);
+                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-
-            // Si hay errores (ej. es menor de 18), recarga la vista mostrando los errores
-            return View(cliente);
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!_context.Clientes.Any(e => e.Id == cliente.Id)) return NotFound();
+                throw;
+            }
         }
+        return View(cliente);
+    }
+
+    // ELIMINAR (GET - Confirmación)
+    public async Task<IActionResult> Eliminar(int id)
+    {
+        var cliente = await _context.Clientes.FirstOrDefaultAsync(m => m.Id == id);
+        return cliente == null ? NotFound() : View(cliente);
+    }
+
+    // ELIMINAR (POST - Acción real)
+    [HttpPost, ActionName("Eliminar")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> EliminarConfirmado(int id)
+    {
+        var cliente = await _context.Clientes.FindAsync(id);
+        if (cliente != null)
+        {
+            _context.Clientes.Remove(cliente);
+            await _context.SaveChangesAsync();
+        }
+        return RedirectToAction(nameof(Index));
     }
 }

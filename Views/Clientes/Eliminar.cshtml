@@ -1,0 +1,21 @@
+@model TareaExamenClientes.Models.Cliente
+@{ ViewData["Title"] = "Eliminar Cliente"; }
+
+<div class="alert alert-danger mt-4">
+    <h3>¿Estás seguro de que quieres eliminar este cliente?</h3>
+    <p class="mb-0">Esta acción no se puede deshacer.</p>
+</div>
+
+<div class="card border-danger">
+    <div class="card-body">
+        <h5 class="card-title">@Model.Nombre</h5>
+        <p class="card-text"><strong>Email:</strong> @Model.Email</p>
+    </div>
+    <div class="card-footer bg-transparent">
+        <form asp-action="Eliminar">
+            <input type="hidden" asp-for="Id" />
+            <button type="submit" class="btn btn-danger">Confirmar Eliminación</button>
+            <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+        </form>
+    </div>
+</div>
