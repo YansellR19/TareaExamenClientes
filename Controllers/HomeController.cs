@@ -28,8 +28,6 @@ public class HomeController : Controller
     {
         return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
     }
-
-    // 👇 AQUÍ ESTÁ EL NUEVO CÓDIGO PARA MANEJAR EL 404 👇
     [Route("/Home/ErrorStatus")]
     public IActionResult ErrorStatus(int statusCode)
     {

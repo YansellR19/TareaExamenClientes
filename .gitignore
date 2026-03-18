@@ -1,0 +1,20 @@
+# Archivos de compilación
+bin/
+obj/
+
+# Archivos de configuración local y secretos
+appsettings.Development.json
+.vs/
+.vscode/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Archivos de publicación
+publish/
+[out]/
+
+# Bases de datos locales de SQL Server (LocalDB)
+*.mdf
+*.ldf
