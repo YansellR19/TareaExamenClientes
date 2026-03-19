@@ -1,7 +1,7 @@
 Sistema de Tienda con Seguridad - UNICDA
 Estudiante: Yansell
 
-Asignatura: Programación III
+Asignatura: Programación web 2
 
 Descripción
 Este proyecto evoluciona el sistema de gestión de tienda agregando una capa completa de Autenticación y Autorización utilizando ASP.NET Core Identity.
