@@ -1,31 +1,59 @@
+using Microsoft.AspNetCore.Identity; //
 using Microsoft.EntityFrameworkCore;
 using TareaExamenClientes.Data;
-using TareaExamenClientes.Models; 
+using TareaExamenClientes.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// 1. SERVICIOS BÁSICOS
 builder.Services.AddControllersWithViews();
+builder.Services.AddRazorPages(); 
 
-// Registrar EF Core con SQL Server
+// 2. CONFIGURACIÓN DE BASE DE DATOS
 builder.Services.AddDbContext<ClienteContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
 
+// 3. CONFIGURACIÓN DE IDENTITY Y ROLES
+builder.Services.AddDefaultIdentity<IdentityUser>(options => {
+    options.SignIn.RequireConfirmedAccount = false;
+    options.Password.RequireDigit = true;
+    options.Password.RequiredLength = 6;
+})
+.AddRoles<IdentityRole>() // Habilita el manejo de roles
+.AddEntityFrameworkStores<ClienteContext>();
+
+// 4. POLÍTICAS DE AUTORIZACIÓN (Puntos extra del examen)
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("SoloAdminUnicda", policy => 
+        policy.RequireRole("Admin")
+              .RequireClaim(System.Security.Claims.ClaimTypes.Email, "admin@unicda.edu.do"));
+});
+
+// 5. CONFIGURACIÓN DE RUTAS DE ACCESO
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = "/Identity/Account/Login";
+    options.LogoutPath = "/Identity/Account/Logout";
+    options.AccessDeniedPath = "/Account/AccessDenied"; // Redirección si no tiene permiso
+});
+
 var app = builder.Build();
 
-// LÓGICA DE DATOS DE PRUEBA (SEED DATA)
+// 6. LÓGICA DE DATOS DE PRUEBA (SEED DATA)
 using (var scope = app.Services.CreateScope())
 {
-    var context = scope.ServiceProvider.GetRequiredService<ClienteContext>();
-    context.Database.EnsureCreated(); // Crea la BD si no existe
+    var services = scope.ServiceProvider;
+    var context = services.GetRequiredService<ClienteContext>();
+    
+    context.Database.EnsureCreated(); // Asegura que la BD existe
 
-    // Solo agrega datos si la tabla Categorias está vacía
+    // Seed de Categorías y Productos
     if (!context.Categorias.Any())
     {
         var electronica = new Categoria { Nombre = "Electrónica" };
         var hogar = new Categoria { Nombre = "Hogar" };
-
         context.Categorias.AddRange(electronica, hogar);
 
         context.Productos.AddRange(
@@ -33,12 +61,14 @@ using (var scope = app.Services.CreateScope())
             new Producto { Nombre = "Mouse Gamer", Precio = 45.00m, Categoria = electronica },
             new Producto { Nombre = "Cafetera Pro", Precio = 120.00m, Categoria = hogar }
         );
-
         context.SaveChanges();
     }
+
+    // Seed de Roles y Usuario Admin (Ejecución asíncrona)
+    await DbInitializer.SeedRolesAndAdminAsync(services);
 }
 
-// Configure the HTTP request pipeline.
+// 7. CONFIGURACIÓN DEL PIPELINE HTTP
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
@@ -47,13 +77,17 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStatusCodePagesWithReExecute("/Home/ErrorStatus", "?statusCode={0}");
+app.UseStaticFiles();
 app.UseRouting();
+
+
+app.UseAuthentication(); 
 app.UseAuthorization();
-app.MapStaticAssets();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}")
-    .WithStaticAssets();
+    pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.MapRazorPages(); // Mapea las páginas de Login/Registro de Identity
 
 app.Run();

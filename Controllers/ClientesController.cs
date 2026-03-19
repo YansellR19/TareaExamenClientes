@@ -2,9 +2,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TareaExamenClientes.Data;
 using TareaExamenClientes.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace TareaExamenClientes.Controllers;
-
+[Authorize(Roles = "Admin,Editor")] // Solo Admin y Editor pueden acceder a este controlador
 public class ClientesController : Controller
 {
     private readonly ClienteContext _context;

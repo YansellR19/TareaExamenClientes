@@ -2,9 +2,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TareaExamenClientes.Data;
 using TareaExamenClientes.Models;
-
+using Microsoft.AspNetCore.Authorization;
 namespace TareaExamenClientes.Controllers;
 
+[Authorize]
 public class PedidoController : Controller {
     private readonly ClienteContext _ctx;
     public PedidoController(ClienteContext ctx) => _ctx = ctx;

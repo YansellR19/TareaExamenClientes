@@ -1,9 +1,12 @@
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using TareaExamenClientes.Models;
 
 namespace TareaExamenClientes.Data;
 
-public class ClienteContext : DbContext {
+// CAMBIO PRINCIPAL: Ahora hereda de IdentityDbContext
+public class ClienteContext : IdentityDbContext<IdentityUser> {
     public ClienteContext(DbContextOptions<ClienteContext> options) : base(options) { }
 
     public DbSet<Cliente> Clientes { get; set; }
@@ -13,6 +16,8 @@ public class ClienteContext : DbContext {
     public DbSet<PedidoProducto> PedidoProductos { get; set; }
 
     protected override void OnModelCreating(ModelBuilder mb) {
+        base.OnModelCreating(mb); // OBLIGATORIO PARA IDENTITY
+
         // 1. Configurar clave compuesta para la relación N:N
         mb.Entity<PedidoProducto>()
             .HasKey(pp => new { pp.PedidoId, pp.ProductoId });

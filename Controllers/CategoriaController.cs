@@ -2,9 +2,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TareaExamenClientes.Data;
 using TareaExamenClientes.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace TareaExamenClientes.Controllers;
 
+[Authorize(Roles = "Admin")]
 public class CategoriaController : Controller
 {
     private readonly ClienteContext _ctx;

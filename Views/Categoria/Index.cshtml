@@ -3,7 +3,10 @@
 
 <div class="d-flex justify-content-between mb-3">
     <h2>Gestión de Categorías</h2>
-    <a asp-action="Crear" class="btn btn-primary">+ Nueva Categoría</a>
+    @if (User.IsInRole("Admin"))
+    {
+        <a asp-action="Crear" class="btn btn-primary">+ Nueva Categoría</a>
+    }
 </div>
 
 <table class="table table-bordered shadow-sm">

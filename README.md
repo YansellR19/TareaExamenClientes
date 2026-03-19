@@ -1,29 +1,49 @@
-# Proyecto: Sistema de Gestión de Tienda
-**Estudiante:** Yansell
-**Institución:** UNICDA
+Sistema de Tienda con Seguridad - UNICDA
+Estudiante: Yansell
 
-## 📝 Descripción
-Este proyecto es una aplicación web desarrollada en **ASP.NET Core MVC** que gestiona Clientes, Categorías, Productos y Pedidos.
+Asignatura: Programación III
 
-## 🚀 Tecnologías Utilizadas
-* **Lenguaje:** C#
-* **Framework:** .NET 9.0 (MVC)
-* **ORM:** Entity Framework Core
-* **Base de Datos:** SQL Server
+Entrega: Examen Parcial 2 (RAE 6)
 
-## 🛠️ Requisitos del RAE 5 Cumplidos
-1. **Relaciones de Base de Datos:**
-   - **1 a Muchos (1:N):** Una Categoría tiene varios Productos.
-   - **Muchos a Muchos (N:N):** Un Pedido puede tener múltiples Productos a través de la tabla `PedidoProducto`.
-2. **Consultas con LINQ (Eager Loading):**
-   - Uso de `.Include()` para mostrar la Categoría en la lista de Productos.
-   - Uso de `.ThenInclude()` para mostrar los detalles de productos dentro de un Pedido.
-3. **Validaciones:**
-   - Validación personalizada en el modelo `Cliente` para verificar mayoría de edad (+18).
+Descripción
+Este proyecto evoluciona el sistema de gestión de tienda agregando una capa completa de Autenticación y Autorización utilizando ASP.NET Core Identity.
 
-## 🏃 Cómo ejecutar el proyecto
-1. Clonar el repositorio.
-2. Configurar la cadena de conexión en `appsettings.json`.
-3. Ejecutar las migraciones:
-   ```bash
-   dotnet ef database update
+Características de Seguridad (RAE 6)
+Se implementaron los siguientes requisitos técnicos:
+
+Identity & EF Core: Configuración de IdentityDbContext y migraciones para tablas de seguridad (AspNetUsers, AspNetRoles).
+
+Gestión de Roles: Implementación de 3 niveles de acceso: Admin, Editor y Cliente.
+
+Protección de Rutas: Uso de atributos [Authorize] para restringir el acceso a controladores y acciones específicas.
+
+Política Personalizada: Creación de la política SoloAdminUnicda que valida el rol y el dominio del correo electrónico.
+
+UI Adaptativa: El menú de navegación oculta o muestra opciones (como el Panel Admin) según el usuario logueado.
+
+Acceso Denegado: Página personalizada para informar a los usuarios cuando no tienen permisos suficientes.
+
+Credenciales de Prueba
+Para facilitar la corrección, el sistema cuenta con un Seeder que crea automáticamente el siguiente acceso:
+
+Usuario Admin: admin@unicda.edu.do
+
+Contraseña: Admin123!
+
+Rol: Administrador Total
+
+Instalación
+Clonar el repositorio.
+
+Actualizar la cadena de conexión en appsettings.json.
+
+Ejecutar las migraciones:
+
+Bash
+
+dotnet ef database update
+Iniciar la aplicación:
+
+Bash
+
+dotnet run
