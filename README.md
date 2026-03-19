@@ -3,8 +3,6 @@ Estudiante: Yansell
 
 Asignatura: Programación III
 
-Entrega: Examen Parcial 2 (RAE 6)
-
 Descripción
 Este proyecto evoluciona el sistema de gestión de tienda agregando una capa completa de Autenticación y Autorización utilizando ASP.NET Core Identity.
 
